@@ -2,7 +2,8 @@ import SignUpPage from "./SignUpPage.svelte";
 import { render, screen } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
-import axios from "axios";
+import { setupServer } from "msw/node";
+import { rest } from "msw";
 
 describe("Sign Up Page", () => {
   describe("Layout", () => {
@@ -63,6 +64,15 @@ describe("Sign Up Page", () => {
       expect(button).toBeEnabled();
     });
     it("sends username, email and password to backend after clicking the button", async () => {
+      let requestBody;
+      const server = setupServer(
+        rest.post("/api/1.0/users", (req, res, ctx) => {
+          requestBody = req.body;
+          return res(ctx.status(200));
+        })
+      );
+
+      server.listen();
       render(SignUpPage);
       const usernameInput = screen.getByLabelText("Username");
       const emailInput = screen.getByLabelText("E-mail");
@@ -75,15 +85,11 @@ describe("Sign Up Page", () => {
       await userEvent.type(passwordRepeatInput, "P4ssword");
       const button = screen.getByRole("button", { name: "Sign Up" });
 
-      const mockFn = jest.fn();
-
-      axios.post = mockFn;
-
       await userEvent.click(button);
 
-      const firstCall = mockFn.mock.calls[0];
-      const body = firstCall[1];
-      expect(body).toEqual({
+      await server.close();
+
+      expect(requestBody).toEqual({
         username: "user1",
         email: "user1@mail.com",
         password: "P4ssword",
