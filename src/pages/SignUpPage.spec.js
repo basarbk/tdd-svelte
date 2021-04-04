@@ -1,5 +1,6 @@
 import SignUpPage from "./SignUpPage.svelte";
 import { render, screen } from "@testing-library/svelte";
+import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 
 describe("Sign Up Page", () => {
@@ -48,6 +49,17 @@ describe("Sign Up Page", () => {
       render(SignUpPage);
       const button = screen.getByRole("button", { name: "Sign Up" });
       expect(button).toBeDisabled();
+    });
+  });
+  describe("Interactions", () => {
+    it("enables the button when the password and password repeat fields have same value", async () => {
+      render(SignUpPage);
+      const passwordInput = screen.getByLabelText("Password");
+      const passwordRepeatInput = screen.getByLabelText("Password Repeat");
+      await userEvent.type(passwordInput, "P4ssword");
+      await userEvent.type(passwordRepeatInput, "P4ssword");
+      const button = screen.getByRole("button", { name: "Sign Up" });
+      expect(button).toBeEnabled();
     });
   });
 });
