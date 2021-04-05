@@ -2,4 +2,6 @@
 	import SignUpPage from './pages/SignUpPage.svelte';
 </script>
 
-<SignUpPage />
+<div class="container">
+	<SignUpPage />
+</div>
