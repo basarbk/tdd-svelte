@@ -5,15 +5,17 @@
 
   $: disabled = (password && passwordRepeat) ? password !== passwordRepeat : true;
 
-  let apiProgress;
+  let apiProgress = false;
 
   let signUpSucess = false;
 
   const submit = () => {
     disabled = true;
-    apiProgress = axios.post('/api/1.0/users', { username, email, password });
-    apiProgress.then(() => {
+    apiProgress = true;
+    axios.post('/api/1.0/users', { username, email, password }).then(() => {
       signUpSucess = true;
+    }).catch((error) => {
+
     })
 
   }
@@ -44,9 +46,9 @@
         </div>
         <div class="text-center">
           <button class="btn btn-primary" {disabled} on:click|preventDefault={submit}>
-            {#await apiProgress}
+            {#if apiProgress}
               <span class="spinner-border spinner-border-sm" role="status"></span>
-            {/await}
+            {/if}
             
             Sign Up</button>
         </div>
