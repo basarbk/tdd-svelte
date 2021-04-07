@@ -14,7 +14,7 @@
     apiProgress = axios.post('/api/1.0/users', { username, email, password });
     apiProgress.then(() => {
       signUpSucess = true;
-    });
+    })
 
   }
 
