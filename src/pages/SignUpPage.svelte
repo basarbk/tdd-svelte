@@ -9,13 +9,17 @@
 
   let signUpSucess = false;
 
+  let errors = {};
+
   const submit = () => {
     disabled = true;
     apiProgress = true;
     axios.post('/api/1.0/users', { username, email, password }).then(() => {
       signUpSucess = true;
     }).catch((error) => {
-
+      if(error.response.status === 400) {
+        errors = error.response.data.validationErrors;
+      }
     })
 
   }
@@ -31,6 +35,9 @@
         <div class="form-group">
           <label for="username">Username</label>
           <input id="username" class="form-control" bind:value={username}/>
+          {#if errors.username}
+            <span role="alert">{errors.username}</span>
+          {/if}
         </div>
         <div class="form-group">
           <label for="e-mail">E-mail</label>
