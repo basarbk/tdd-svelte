@@ -35,6 +35,9 @@
     "transform": {
       "^.+\\.svelte$": "svelte-jester",
       "^.+\\.js$": "babel-jest"
-    }
+    },
+    "setupFilesAfterEnv": [
+      "./setupTest.js"
+    ]
   }
 }
