@@ -199,5 +199,47 @@ describe("Sign Up Page", () => {
       const validationAlert = screen.queryByRole("alert");
       expect(validationAlert).not.toBeInTheDocument();
     });
+    it("hides spinner after response received", async () => {
+      server.use(
+        rest.post("/api/1.0/users", (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            ctx.json({
+              validationErrors: {
+                username: "Username cannot be null",
+              },
+            })
+          );
+        })
+      );
+      await setup();
+
+      await userEvent.click(button);
+
+      await screen.findByText("Username cannot be null");
+      const spinner = screen.queryByRole("status");
+      expect(spinner).not.toBeInTheDocument();
+    });
+    it("enables the button after response received", async () => {
+      server.use(
+        rest.post("/api/1.0/users", (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            ctx.json({
+              validationErrors: {
+                username: "Username cannot be null",
+              },
+            })
+          );
+        })
+      );
+      await setup();
+
+      await userEvent.click(button);
+
+      await screen.findByText("Username cannot be null");
+
+      expect(button).toBeEnabled();
+    });
   });
 });

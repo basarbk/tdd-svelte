@@ -12,7 +12,6 @@
   let errors = {};
 
   const submit = () => {
-    disabled = true;
     apiProgress = true;
     axios.post('/api/1.0/users', { username, email, password }).then(() => {
       signUpSucess = true;
@@ -20,6 +19,7 @@
       if(error.response.status === 400) {
         errors = error.response.data.validationErrors;
       }
+      apiProgress = false;
     })
 
   }
@@ -52,7 +52,7 @@
           <input id="password-repeat" type="password" class="form-control" bind:value={passwordRepeat}/>
         </div>
         <div class="text-center">
-          <button class="btn btn-primary" {disabled} on:click|preventDefault={submit}>
+          <button class="btn btn-primary" disabled={disabled || apiProgress} on:click|preventDefault={submit}>
             {#if apiProgress}
               <span class="spinner-border spinner-border-sm" role="status"></span>
             {/if}
