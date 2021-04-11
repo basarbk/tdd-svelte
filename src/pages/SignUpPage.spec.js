@@ -72,10 +72,10 @@ describe("Sign Up Page", () => {
 
     afterAll(() => server.close());
 
-    let button, passwordInput, passwordRepeatInput;
+    let button, usernameInput, passwordInput, passwordRepeatInput;
     const setup = async () => {
       render(SignUpPage);
-      const usernameInput = screen.getByLabelText("Username");
+      usernameInput = screen.getByLabelText("Username");
       const emailInput = screen.getByLabelText("E-mail");
       passwordInput = screen.getByLabelText("Password");
       passwordRepeatInput = screen.getByLabelText("Password Repeat");
@@ -235,5 +235,24 @@ describe("Sign Up Page", () => {
       const validationError = screen.queryByText("Password mismatch");
       expect(validationError).not.toBeInTheDocument();
     });
+    it.each`
+      field         | message                      | label
+      ${"username"} | ${"Username cannot be null"} | ${"Username"}
+      ${"email"}    | ${"E-mail cannot be null"}   | ${"E-mail"}
+      ${"password"} | ${"Password cannot be null"} | ${"Password"}
+    `(
+      "clears validation error after $field field is updated",
+      async ({ field, message, label }) => {
+        server.use(generateValidationError(field, message));
+        await setup();
+
+        await userEvent.click(button);
+
+        const validationError = await screen.findByText(message);
+        const input = screen.getByLabelText(label);
+        await userEvent.type(input, "updated");
+        expect(validationError).not.toBeInTheDocument();
+      }
+    );
   });
 });

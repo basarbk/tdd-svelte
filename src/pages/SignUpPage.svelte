@@ -10,6 +10,21 @@
 
   $: passwordMismatch = password !== passwordRepeat;
 
+  $: {
+    if(username){}
+    errors.username = "";
+  }
+
+  $: {
+    if(email){}
+    errors.email = "";
+  }
+
+  $: {
+    if(password){}
+    errors.password = "";
+  }
+
   let apiProgress = false;
 
   let signUpSucess = false;
