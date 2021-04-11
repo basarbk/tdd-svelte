@@ -72,13 +72,13 @@ describe("Sign Up Page", () => {
 
     afterAll(() => server.close());
 
-    let button;
+    let button, passwordInput, passwordRepeatInput;
     const setup = async () => {
       render(SignUpPage);
       const usernameInput = screen.getByLabelText("Username");
       const emailInput = screen.getByLabelText("E-mail");
-      const passwordInput = screen.getByLabelText("Password");
-      const passwordRepeatInput = screen.getByLabelText("Password Repeat");
+      passwordInput = screen.getByLabelText("Password");
+      passwordRepeatInput = screen.getByLabelText("Password Repeat");
       button = screen.getByRole("button", { name: "Sign Up" });
       await userEvent.type(usernameInput, "user1");
       await userEvent.type(emailInput, "user1@mail.com");
@@ -222,6 +222,18 @@ describe("Sign Up Page", () => {
       await screen.findByText("Username cannot be null");
 
       expect(button).toBeEnabled();
+    });
+    it("displays mismatch message for password repeat input", async () => {
+      await setup();
+      await userEvent.type(passwordInput, "N3wP4ss");
+      await userEvent.type(passwordRepeatInput, "anotherPa4s");
+      const validationError = await screen.findByText("Password mismatch");
+      expect(validationError).toBeInTheDocument();
+    });
+    it("does not display mismatch message initially", () => {
+      render(SignUpPage);
+      const validationError = screen.queryByText("Password mismatch");
+      expect(validationError).not.toBeInTheDocument();
     });
   });
 });

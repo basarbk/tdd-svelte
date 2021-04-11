@@ -4,7 +4,11 @@
   let disabled = true;
   let username, email, password, passwordRepeat;
 
+  let passwordMismatch = false;
+
   $: disabled = (password && passwordRepeat) ? password !== passwordRepeat : true;
+
+  $: passwordMismatch = password !== passwordRepeat;
 
   let apiProgress = false;
 
@@ -36,10 +40,7 @@
         <Input id="username" label="Username" help={errors.username} bind:value={username}/>
         <Input id="e-mail" label="E-mail" help={errors.email} bind:value={email} />
         <Input id="password" label="Password" help={errors.password} bind:value={password} type="password" />
-        <div class="form-group">
-          <label for="password-repeat">Password Repeat</label>
-          <input id="password-repeat" type="password" class="form-control" bind:value={passwordRepeat}/>
-        </div>
+        <Input id="password-repeat" label="Password Repeat" help={passwordMismatch ? "Password mismatch" : ""} bind:value={passwordRepeat} type="password" />
         <div class="text-center">
           <button class="btn btn-primary" disabled={disabled || apiProgress} on:click|preventDefault={submit}>
             {#if apiProgress}
