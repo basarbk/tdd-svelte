@@ -1,25 +1,17 @@
 <script>
-
-  import { onMount } from "svelte";
-
-  export let label = "", id = "", value = "", help = "", type = "text";
-
-  let inputElement;
-
-  onMount(() => {
-    inputElement.type = type;
-  })
+  export let label = "", id = "", help = "", type = "text";
 
 </script>
 
 <div class="form-group">
   <label for={id}>{label}</label>
   <input 
-    bind:this={inputElement}
     id={id}
     class="form-control"
     class:is-invalid={help}
-    bind:value />
+    type={type}
+    on:input
+     />
   {#if help}
     <span class="invalid-feedback" role="alert">{help}</span>
   {/if}
