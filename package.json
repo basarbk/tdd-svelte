@@ -11,6 +11,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.13.12",
     "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^11.0.0",
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/svelte": "^3.0.3",
@@ -29,7 +30,8 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
-    "sirv-cli": "^1.0.0"
+    "sirv-cli": "^1.0.0",
+    "svelte-i18n": "^3.3.9"
   },
   "jest": {
     "transform": {

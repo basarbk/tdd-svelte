@@ -1,4 +1,5 @@
 <script>
+  import { _ } from "svelte-i18n";
   import axios from 'axios';
   import Input from '../components/Input.svelte'
 
@@ -48,20 +49,20 @@
   {#if !signUpSucess}
     <form class="card mt-5" data-testid="form-sign-up">
       <div class="card-header">
-        <h1 class="text-center">Sign Up</h1>
+        <h1 class="text-center">{$_("signUp")}</h1>
       </div>
       <div class="card-body">
-        <Input id="username" label="Username" help={errors.username} on:input={onChange}/>
-        <Input id="email" label="E-mail" help={errors.email} on:input={onChange} />
-        <Input id="password" label="Password" help={errors.password} on:input={onChange} type="password" />
-        <Input id="passwordRepeat" label="Password Repeat" help={passwordMismatch ? "Password mismatch" : ""} on:input={onChange} type="password" />
+        <Input id="username" label={$_("username")} help={errors.username} on:input={onChange}/>
+        <Input id="email" label={$_("email")} help={errors.email} on:input={onChange} />
+        <Input id="password" label={$_("password")} help={errors.password} on:input={onChange} type="password" />
+        <Input id="passwordRepeat" label={$_("passwordRepeat")} help={passwordMismatch ? "Password mismatch" : ""} on:input={onChange} type="password" />
         <div class="text-center">
           <button class="btn btn-primary" disabled={disabled || apiProgress} on:click|preventDefault={submit}>
             {#if apiProgress}
               <span class="spinner-border spinner-border-sm" role="status"></span>
             {/if}
             
-            Sign Up</button>
+            {$_("signUp")}</button>
         </div>
       </div>
     </form>
