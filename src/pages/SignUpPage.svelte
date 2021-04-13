@@ -1,5 +1,5 @@
 <script>
-  import { _, locale } from "svelte-i18n";
+  import { _ } from "svelte-i18n";
   import axios from 'axios';
   import Input from '../components/Input.svelte'
 
@@ -70,12 +70,3 @@
     <div class="alert alert-success mt-3">Please check your e-mail to activate your account</div>
   {/if}
 </div>
-
-<img src="https://www.countryflags.io/tr/flat/24.png" alt="Turkish Flag" title="Türkçe" on:click={() => locale.set("tr")} />
-<img src="https://www.countryflags.io/us/flat/24.png" alt="English Flag" title="English" on:click={() => locale.set("en")} />
-
-<style>
-  img {
-    cursor: pointer;
-  }
-</style>

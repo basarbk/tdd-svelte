@@ -1,4 +1,5 @@
 import SignUpPage from "./SignUpPage.svelte";
+import LanguageSelector from "../components/LanguageSelector.svelte";
 import { render, screen, waitFor } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
@@ -258,6 +259,17 @@ describe("Sign Up Page", () => {
     );
   });
   describe("Internationalization", () => {
+    let turkishToggle, englishToggle;
+    const setup = () => {
+      render(SignUpPage);
+      render(LanguageSelector);
+      turkishToggle = screen.getByTitle("Türkçe");
+      englishToggle = screen.getByTitle("English");
+    };
+
+    afterEach(() => {
+      document.body.innerHTML = "";
+    });
     it("initially displays all texts in English", () => {
       render(SignUpPage);
       expect(
@@ -272,8 +284,7 @@ describe("Sign Up Page", () => {
       expect(screen.queryByLabelText(en.passwordRepeat)).toBeInTheDocument();
     });
     it("displays all text in Turkish after toggling the language", async () => {
-      render(SignUpPage);
-      const turkishToggle = screen.getByTitle("Türkçe");
+      setup();
       await userEvent.click(turkishToggle);
       expect(
         screen.queryByRole("heading", { name: tr.signUp })
@@ -287,11 +298,8 @@ describe("Sign Up Page", () => {
       expect(screen.queryByLabelText(tr.passwordRepeat)).toBeInTheDocument();
     });
     it("displays all texts in English after toggling back from Turkish", async () => {
-      render(SignUpPage);
-      const turkishToggle = screen.getByTitle("Türkçe");
+      setup();
       await userEvent.click(turkishToggle);
-
-      const englishToggle = screen.getByTitle("English");
       await userEvent.click(englishToggle);
       expect(
         screen.queryByRole("heading", { name: en.signUp })

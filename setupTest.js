@@ -1,2 +1,4 @@
 import "@testing-library/jest-dom";
-import "./src/locale/i18n";
+import { reset } from "./src/locale/i18n";
+
+afterEach(reset);
