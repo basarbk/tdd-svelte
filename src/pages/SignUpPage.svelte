@@ -55,7 +55,7 @@
         <Input id="username" label={$_("username")} help={errors.username} on:input={onChange}/>
         <Input id="email" label={$_("email")} help={errors.email} on:input={onChange} />
         <Input id="password" label={$_("password")} help={errors.password} on:input={onChange} type="password" />
-        <Input id="passwordRepeat" label={$_("passwordRepeat")} help={passwordMismatch ? "Password mismatch" : ""} on:input={onChange} type="password" />
+        <Input id="passwordRepeat" label={$_("passwordRepeat")} help={passwordMismatch ? $_("passwordMismatchValidation") : ""} on:input={onChange} type="password" />
         <div class="text-center">
           <button class="btn btn-primary" disabled={disabled || apiProgress} on:click|preventDefault={submit}>
             {#if apiProgress}

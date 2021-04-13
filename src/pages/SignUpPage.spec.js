@@ -312,5 +312,15 @@ describe("Sign Up Page", () => {
       expect(screen.queryByLabelText(en.password)).toBeInTheDocument();
       expect(screen.queryByLabelText(en.passwordRepeat)).toBeInTheDocument();
     });
+    it("displays password mismatch validation in Turkish", async () => {
+      setup();
+      await userEvent.click(turkishToggle);
+      const password = screen.queryByLabelText(tr.password);
+      await userEvent.type(password, "n3WPass");
+      const validationMessageInTurkish = screen.queryByText(
+        tr.passwordMismatchValidation
+      );
+      expect(validationMessageInTurkish).toBeInTheDocument();
+    });
   });
 });
