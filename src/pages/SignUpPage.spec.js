@@ -7,6 +7,14 @@ import { rest } from "msw";
 import en from "../locale/en.json";
 import tr from "../locale/tr.json";
 
+const server = setupServer();
+
+beforeAll(() => server.listen());
+
+beforeEach(() => server.resetHandlers());
+
+afterAll(() => server.close());
+
 describe("Sign Up Page", () => {
   describe("Layout", () => {
     it("has Sign Up header", () => {
@@ -58,22 +66,16 @@ describe("Sign Up Page", () => {
   describe("Interactions", () => {
     let requestBody;
     let counter = 0;
-    const server = setupServer(
-      rest.post("/api/1.0/users", (req, res, ctx) => {
-        requestBody = req.body;
-        counter += 1;
-        return res(ctx.status(200));
-      })
-    );
-
-    beforeAll(() => server.listen());
-
     beforeEach(() => {
       counter = 0;
-      server.resetHandlers();
+      server.use(
+        rest.post("/api/1.0/users", (req, res, ctx) => {
+          requestBody = req.body;
+          counter += 1;
+          return res(ctx.status(200));
+        })
+      );
     });
-
-    afterAll(() => server.close());
 
     let button, usernameInput, passwordInput, passwordRepeatInput;
     const setup = async () => {
@@ -259,12 +261,34 @@ describe("Sign Up Page", () => {
     );
   });
   describe("Internationalization", () => {
-    let turkishToggle, englishToggle;
+    beforeEach(() => {
+      server.use(
+        rest.post("/api/1.0/users", (req, res, ctx) => {
+          const language = req.headers.get("Accept-Language") || "en";
+          return res(
+            ctx.status(400),
+            ctx.json({
+              validationErrors: {
+                username:
+                  language === "en"
+                    ? "Username cannot be null"
+                    : "Kullanıcı adı boş olamaz",
+              },
+            })
+          );
+        })
+      );
+    });
+
+    let turkishToggle, englishToggle, password, passwordRepeat, button;
     const setup = () => {
       render(SignUpPage);
       render(LanguageSelector);
       turkishToggle = screen.getByTitle("Türkçe");
       englishToggle = screen.getByTitle("English");
+      password = screen.queryByLabelText(en.password);
+      passwordRepeat = screen.queryByLabelText(en.passwordRepeat);
+      button = screen.getByRole("button", { name: en.signUp });
     };
 
     afterEach(() => {
@@ -315,12 +339,44 @@ describe("Sign Up Page", () => {
     it("displays password mismatch validation in Turkish", async () => {
       setup();
       await userEvent.click(turkishToggle);
-      const password = screen.queryByLabelText(tr.password);
       await userEvent.type(password, "n3WPass");
       const validationMessageInTurkish = screen.queryByText(
         tr.passwordMismatchValidation
       );
       expect(validationMessageInTurkish).toBeInTheDocument();
+    });
+    it("returns validation messages in english initially", async () => {
+      setup();
+      await userEvent.type(password, "P4ssword");
+      await userEvent.type(passwordRepeat, "P4ssword");
+      await userEvent.click(button);
+      const validationError = await screen.findByText(
+        "Username cannot be null"
+      );
+      expect(validationError).toBeInTheDocument();
+    });
+    it("returns validation messages in Turkish after that language is selected", async () => {
+      setup();
+      await userEvent.click(turkishToggle);
+      await userEvent.type(password, "P4ssword");
+      await userEvent.type(passwordRepeat, "P4ssword");
+      await userEvent.click(button);
+      const validationError = await screen.findByText(
+        "Kullanıcı adı boş olamaz"
+      );
+      expect(validationError).toBeInTheDocument();
+    });
+    it("returns validation messages in English after toggling back from Turkish", async () => {
+      setup();
+      await userEvent.click(turkishToggle);
+      await userEvent.click(englishToggle);
+      await userEvent.type(password, "P4ssword");
+      await userEvent.type(passwordRepeat, "P4ssword");
+      await userEvent.click(button);
+      const validationError = await screen.findByText(
+        "Username cannot be null"
+      );
+      expect(validationError).toBeInTheDocument();
     });
   });
 });

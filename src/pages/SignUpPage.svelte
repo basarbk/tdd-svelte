@@ -2,6 +2,7 @@
   import { _ } from "svelte-i18n";
   import axios from 'axios';
   import Input from '../components/Input.svelte'
+  import "../api/apiCalls";
 
   let disabled = true;
   let form = {
