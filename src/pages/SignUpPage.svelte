@@ -1,8 +1,7 @@
 <script>
   import { _ } from "svelte-i18n";
-  import axios from 'axios';
   import Input from '../components/Input.svelte'
-  import "../api/apiCalls";
+  import { signup } from "../api/apiCalls";
 
   let disabled = true;
   let form = {
@@ -25,18 +24,20 @@
 
   let errors = {};
 
-  const submit = () => {
+  const submit = async () => {
     apiProgress = true;
     const { username, email, password } = form
-    axios.post('/api/1.0/users', { username, email, password }).then(() => {
+    
+    try {
+      await signup({ username, email, password });
       signUpSucess = true;
-    }).catch((error) => {
+    } catch (error) {
       if(error.response.status === 400) {
         errors = error.response.data.validationErrors;
       }
       apiProgress = false;
-    })
-
+    }
+  
   }
 
   const onChange = (event) => {
