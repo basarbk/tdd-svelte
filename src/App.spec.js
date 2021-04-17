@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/svelte";
+import userEvent from "@testing-library/user-event";
 import App from "./App.svelte";
 
 describe("Routing", () => {
@@ -40,6 +41,35 @@ describe("Routing", () => {
       setup(path);
       const page = screen.queryByTestId(pageTestId);
       expect(page).not.toBeInTheDocument();
+    }
+  );
+
+  it.each`
+    path         | queryName
+    ${"/"}       | ${"Home"}
+    ${"/signup"} | ${"Sign Up"}
+    ${"/login"}  | ${"Login"}
+  `("has link to $queryName on NavBar", ({ path, queryName }) => {
+    setup("/");
+    const link = screen.queryByRole("link", { name: queryName });
+    expect(link).toBeInTheDocument();
+    expect(link.getAttribute("href")).toBe(path);
+  });
+
+  it.each`
+    initialPath  | clicking     | visible          | lastUrl
+    ${"/"}       | ${"Sign Up"} | ${"signup-page"} | ${"/signup"}
+    ${"/signup"} | ${"Home"}    | ${"home-page"}   | ${"/"}
+    ${"/"}       | ${"Login"}   | ${"login-page"}  | ${"/login"}
+  `(
+    "displays $visible after clicking $clicking link",
+    async ({ initialPath, clicking, visible, lastUrl }) => {
+      setup(initialPath);
+      const link = screen.queryByRole("link", { name: clicking });
+      await userEvent.click(link);
+      const page = screen.queryByTestId(visible);
+      expect(page).toBeInTheDocument();
+      expect(window.location.pathname).toBe(lastUrl);
     }
   );
 });
