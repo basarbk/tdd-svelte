@@ -31,13 +31,17 @@
   "dependencies": {
     "axios": "^0.21.1",
     "sirv-cli": "^1.0.0",
-    "svelte-i18n": "^3.3.9"
+    "svelte-i18n": "^3.3.9",
+    "svelte-routing": "^1.5.0"
   },
   "jest": {
     "transform": {
       "^.+\\.svelte$": "svelte-jester",
       "^.+\\.js$": "babel-jest"
     },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(svelte-routing)/)"
+    ],
     "setupFilesAfterEnv": [
       "./setupTest.js"
     ]

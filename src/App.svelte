@@ -5,38 +5,37 @@
 	import LoginPage from "./pages/LoginPage.svelte";
 	import UserPage from "./pages/UserPage.svelte";
 	import { _ } from "svelte-i18n";
-
-	let path = window.location.pathname;
-
-	const onClickNavBar = (event) => {
-		path = event.currentTarget.attributes.href.value;
-		window.history.pushState({}, "", path);
-	}
+	import { Router, Route, Link} from "svelte-routing";
 
 </script>
 
-<div class="bg-light shadow-sm">
-	<nav class="navbar navbar-expand container navbar-light">
-		<a class="navbar-brand" href="/" title="Home" on:click|preventDefault={onClickNavBar}>
-			<img src="/assets/hoaxify.png" alt="Hoaxify" width="60"/>
-			
-			Hoaxify</a>
-
-		<ul class="navbar-nav ml-auto">
-			<a class="nav-link" href="/signup" on:click|preventDefault={onClickNavBar}>{$_("signUp")}</a>
-			<a class="nav-link" href="/login" on:click|preventDefault={onClickNavBar}>Login</a>
-		</ul>
-	</nav>
-</div>
-<div class="container">
-	{#if path === "/"}
-		<HomePage />
-	{:else if path === "/signup"}
-		<SignUpPage />
-	{:else if path === "/login"}
-		<LoginPage />
-	{:else if path.startsWith("/user")}
-		<UserPage />
-	{/if}
-	<LanguageSelector />
-</div>
+<Router url={window.location.pathname}>
+	<div class="bg-light shadow-sm">
+		<nav class="navbar navbar-expand container navbar-light">
+			<Link class="navbar-brand" to="/" title="Home">
+				<img src="/assets/hoaxify.png" alt="Hoaxify" width="60"/>
+				Hoaxify
+			</Link>
+	
+			<ul class="navbar-nav ml-auto">
+				<Link class="nav-link" to="/signup">{$_("signUp")}</Link>
+				<Link class="nav-link" to="/login">Login</Link>
+			</ul>
+		</nav>
+	</div>
+	<div class="container">
+		<Route path="/">
+			<HomePage />
+		</Route>
+		<Route path="/signup">
+			<SignUpPage />
+		</Route>
+		<Route path="/login">
+			<LoginPage />
+		</Route>
+		<Route path="/user/:id" let:params>
+			<UserPage id={params.id}/>
+		</Route>
+		<LanguageSelector />
+	</div>
+</Router>
