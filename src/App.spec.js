@@ -72,4 +72,10 @@ describe("Routing", () => {
       expect(window.location.pathname).toBe(lastUrl);
     }
   );
+  it("displays home page when clicking brand logo", async () => {
+    setup("/login");
+    const image = screen.queryByAltText("Hoaxify");
+    await userEvent.click(image);
+    expect(screen.queryByTestId("home-page")).toBeInTheDocument();
+  });
 });
