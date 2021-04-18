@@ -1,6 +1,20 @@
 import { render, screen } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import App from "./App.svelte";
+import { setupServer } from "msw/node";
+import { rest } from "msw";
+
+const server = setupServer(
+  rest.post("/api/1.0/users/token/:token", (req, res, ctx) => {
+    return res(ctx.status(200));
+  })
+);
+
+beforeAll(() => server.listen());
+
+beforeEach(() => server.resetHandlers());
+
+afterAll(() => server.close());
 
 describe("Routing", () => {
   const setup = (path) => {
