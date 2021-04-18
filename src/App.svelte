@@ -4,6 +4,7 @@
 	import HomePage from "./pages/HomePage.svelte";
 	import LoginPage from "./pages/LoginPage.svelte";
 	import UserPage from "./pages/UserPage.svelte";
+	import AccountActivationPage from "./pages/AccountActivationPage.svelte";
 	import { _ } from "svelte-i18n";
 	import { Router, Route, Link} from "svelte-routing";
 
@@ -35,6 +36,9 @@
 		</Route>
 		<Route path="/user/:id" let:params>
 			<UserPage id={params.id}/>
+		</Route>
+		<Route path="/activate/:token" let:params>
+			<AccountActivationPage token={params.token}/>
 		</Route>
 		<LanguageSelector />
 	</div>
