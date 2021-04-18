@@ -1,6 +1,7 @@
 <script>
-  import { fade, fly } from "svelte/transition";
+  import { fade } from "svelte/transition";
   import { loadUsers } from "../api/apiCalls";
+  import { navigate } from "svelte-routing";
 
   let page = {
     content: []
@@ -12,6 +13,10 @@
   }
 
   loadData();
+
+  const clickLink = (event) => {
+    navigate(event.target.pathname)
+  }
 </script>
 
 <div class="card">
@@ -20,7 +25,10 @@
   </div>
   <ul class="list-group list-group-flush">
     {#each page.content as user}
-      <li class="list-group-item list-group-item-action">{user.username}</li>
+      <a 
+      href={`/user/${user.id}`}
+      on:click|preventDefault={clickLink}
+      class="list-group-item list-group-item-action">{user.username}</a>
     {/each}
   </ul>
   <div class="card-footer">

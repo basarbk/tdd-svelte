@@ -11,7 +11,19 @@ const server = setupServer(
   rest.get("/api/1.0/users", (req, res, ctx) => {
     return res(
       ctx.status(200),
-      ctx.json({ content: [], page: 0, size: 0, totalPages: 0 })
+      ctx.json({
+        content: [
+          {
+            id: 1,
+            username: "user-in-list",
+            email: "user-in-list@mail.com",
+            image: null,
+          },
+        ],
+        page: 0,
+        size: 0,
+        totalPages: 0,
+      })
     );
   })
 );
@@ -107,5 +119,12 @@ describe("Routing", () => {
     const image = screen.queryByAltText("Hoaxify");
     await userEvent.click(image);
     expect(screen.queryByTestId("home-page")).toBeInTheDocument();
+  });
+
+  it("navigates to user page when clicking the username on user list", async () => {
+    setup("/");
+    const user = await screen.findByText("user-in-list");
+    await userEvent.click(user);
+    expect(screen.queryByTestId("user-page")).toBeInTheDocument();
   });
 });
