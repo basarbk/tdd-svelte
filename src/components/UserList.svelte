@@ -1,5 +1,5 @@
 <script>
-
+  import { fade, fly } from "svelte/transition";
   import { loadUsers } from "../api/apiCalls";
 
   let page = {
@@ -23,11 +23,17 @@
       <li class="list-group-item list-group-item-action">{user.username}</li>
     {/each}
   </ul>
-  {#if page.page > 0}
-    <button on:click={() => loadData(page.page - 1)} >&lt; previous</button>
-  {/if}
-  {#if page.page < page.totalPages - 1}
-    <button on:click={() => loadData(page.page + 1)}>next &gt;</button>
-  {/if}
+  <div class="card-footer">
+    {#if page.page > 0}
+      <button class="btn btn-outline-secondary btn-sm" 
+      in:fade
+      on:click={() => loadData(page.page - 1)} >&lt; previous</button>
+    {/if}
+    {#if page.page < page.totalPages - 1}
+      <button class="btn btn-outline-secondary btn-sm float-right" 
+      in:fade
+      on:click={() => loadData(page.page + 1)}>next &gt;</button>
+    {/if}
+  </div>
   
 </div>
