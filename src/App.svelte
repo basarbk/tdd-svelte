@@ -11,7 +11,7 @@
 </script>
 
 <Router url={window.location.pathname}>
-	<div class="bg-light shadow-sm">
+	<div class="bg-light shadow-sm mb-3">
 		<nav class="navbar navbar-expand container navbar-light">
 			<Link class="navbar-brand" to="/" title="Home">
 				<img src="/assets/hoaxify.png" alt="Hoaxify" width="60"/>
