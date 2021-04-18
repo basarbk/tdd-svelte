@@ -1,5 +1,6 @@
 <script>
   import { activate } from "../api/apiCalls";
+  import Spinner from "../components/Spinner.svelte";
 
   export let token;
   let apiCall = activate(token);
@@ -7,7 +8,7 @@
 
 <div data-testid="activation-page">
   {#await apiCall}
-    <span class="spinner-border spinner-border-sm" role="status"></span>
+    <Spinner size="normal"/>
   {:then}
     <div class="alert alert-success mt-3">Account is activated</div>
   {:catch}
