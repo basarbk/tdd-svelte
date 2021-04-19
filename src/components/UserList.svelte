@@ -2,14 +2,19 @@
   import { fade } from "svelte/transition";
   import { loadUsers } from "../api/apiCalls";
   import UserListItem from "./UserListItem.svelte";
+  import Spinner from "./Spinner.svelte";
+
+  let pendingApiCall;
 
   let page = {
     content: []
   }
 
   const loadData = async (pageNumber) => {
+    pendingApiCall = true;
     const result = await loadUsers(pageNumber);
     page = result.data
+    pendingApiCall = false;
   }
 
   loadData();
@@ -25,17 +30,22 @@
       <UserListItem {user} />
     {/each}
   </ul>
-  <div class="card-footer">
-    {#if page.page > 0}
-      <button class="btn btn-outline-secondary btn-sm" 
-      in:fade
-      on:click={() => loadData(page.page - 1)} >&lt; previous</button>
+  <div class="card-footer text-center">
+    {#if pendingApiCall}
+      <Spinner size="normal"/>
+    {:else}
+      {#if page.page > 0}
+        <button class="btn btn-outline-secondary btn-sm float-left" 
+        in:fade
+        on:click={() => loadData(page.page - 1)} >&lt; previous</button>
+      {/if}
+      {#if page.page < page.totalPages - 1}
+        <button class="btn btn-outline-secondary btn-sm float-right" 
+        in:fade
+        on:click={() => loadData(page.page + 1)}>next &gt;</button>
+      {/if}
     {/if}
-    {#if page.page < page.totalPages - 1}
-      <button class="btn btn-outline-secondary btn-sm float-right" 
-      in:fade
-      on:click={() => loadData(page.page + 1)}>next &gt;</button>
-    {/if}
+
   </div>
   
 </div>

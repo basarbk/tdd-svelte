@@ -52,12 +52,11 @@ describe("User List", () => {
   it("hides next page link at last page", async () => {
     render(UserList);
     await screen.findByText("user1");
-    const nextPage = screen.queryByText("next >");
-    await userEvent.click(nextPage);
+    await userEvent.click(screen.queryByText("next >"));
     await screen.findByText("user4");
-    await userEvent.click(nextPage);
+    await userEvent.click(screen.queryByText("next >"));
     await screen.findByText("user7");
-    expect(nextPage).not.toBeInTheDocument();
+    expect(screen.queryByText("next >")).not.toBeInTheDocument();
   });
   it("does not display previous page link in the first page", async () => {
     render(UserList);
@@ -82,6 +81,17 @@ describe("User List", () => {
     await userEvent.click(previousPage);
     const firstUserOnPage1 = await screen.findByText("user1");
     expect(firstUserOnPage1).toBeInTheDocument();
+  });
+  it("displays spinner while the api call is in progress", () => {
+    render(UserList);
+    const spinner = screen.queryByRole("status");
+    expect(spinner).toBeInTheDocument();
+  });
+  it("hides spinner when api call is completed", async () => {
+    render(UserList);
+    const spinner = screen.queryByRole("status");
+    await screen.findByText("user1");
+    expect(spinner).not.toBeInTheDocument();
   });
 });
 
