@@ -1,7 +1,7 @@
 <script>
   import { fade } from "svelte/transition";
   import { loadUsers } from "../api/apiCalls";
-  import { navigate } from "svelte-routing";
+  import { link } from "svelte-routing";
 
   let page = {
     content: []
@@ -14,9 +14,6 @@
 
   loadData();
 
-  const clickLink = (event) => {
-    navigate(event.target.pathname)
-  }
 </script>
 
 <div class="card">
@@ -27,7 +24,7 @@
     {#each page.content as user}
       <a 
       href={`/user/${user.id}`}
-      on:click|preventDefault={clickLink}
+      use:link
       class="list-group-item list-group-item-action">{user.username}</a>
     {/each}
   </ul>
