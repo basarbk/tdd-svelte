@@ -25,6 +25,17 @@ const server = setupServer(
         totalPages: 0,
       })
     );
+  }),
+  rest.get("/api/1.0/users/:id", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        id: 1,
+        username: "user1",
+        email: "user1@mail.com",
+        image: null,
+      })
+    );
   })
 );
 
