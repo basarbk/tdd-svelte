@@ -4,11 +4,7 @@
   import Spinner from "../components/Spinner.svelte";
   export let id;
 
-  let user = {};
-  
-  let apiCall = getUserById(id).then(response => {
-    user = response.data
-  })
+  let apiCall = getUserById(id)
 </script>
 
 <div data-testid="user-page">
@@ -16,7 +12,11 @@
     <div class="alert alert-secondary text-center">
       <Spinner size="normal"/>
     </div>
-  {:then}
-    <ProfileCard {user} />
+  {:then response}
+    <ProfileCard user={response.data} />
+  {:catch error}
+    <div class="alert alert-danger text-center">
+      {error.response.data.message}
+    </div>
   {/await}
 </div>
