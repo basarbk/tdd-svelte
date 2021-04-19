@@ -1,15 +1,22 @@
 <script>
   import { getUserById } from "../api/apiCalls";
   import ProfileCard from "../components/ProfileCard.svelte";
+  import Spinner from "../components/Spinner.svelte";
   export let id;
 
   let user = {};
   
-  getUserById(id).then(response => {
+  let apiCall = getUserById(id).then(response => {
     user = response.data
   })
 </script>
 
 <div data-testid="user-page">
-  <ProfileCard {user} />
+  {#await apiCall}
+    <div class="alert alert-secondary text-center">
+      <Spinner size="normal"/>
+    </div>
+  {:then}
+    <ProfileCard {user} />
+  {/await}
 </div>
