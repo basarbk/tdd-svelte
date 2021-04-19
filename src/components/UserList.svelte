@@ -21,7 +21,7 @@
     <h3>Users</h3>
   </div>
   <ul class="list-group list-group-flush">
-    {#each page.content as user}
+    {#each page.content as user (user.id)}
       <UserListItem {user} />
     {/each}
   </ul>
