@@ -1,7 +1,7 @@
 <script>
   import { fade } from "svelte/transition";
   import { loadUsers } from "../api/apiCalls";
-  import { link } from "svelte-routing";
+  import UserListItem from "./UserListItem.svelte";
 
   let page = {
     content: []
@@ -22,10 +22,7 @@
   </div>
   <ul class="list-group list-group-flush">
     {#each page.content as user}
-      <a 
-      href={`/user/${user.id}`}
-      use:link
-      class="list-group-item list-group-item-action">{user.username}</a>
+      <UserListItem {user} />
     {/each}
   </ul>
   <div class="card-footer">
