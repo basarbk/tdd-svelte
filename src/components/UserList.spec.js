@@ -3,6 +3,9 @@ import UserList from "./UserList.svelte";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
 import userEvent from "@testing-library/user-event";
+import en from "../locale/en.json";
+import tr from "../locale/tr.json";
+import LanguageSelector from "./LanguageSelector.svelte";
 
 const server = setupServer();
 
@@ -92,6 +95,44 @@ describe("User List", () => {
     const spinner = screen.queryByRole("status");
     await screen.findByText("user1");
     expect(spinner).not.toBeInTheDocument();
+  });
+});
+
+describe("Internationalization", () => {
+  let turkishToggle;
+  const setup = () => {
+    render(UserList);
+    render(LanguageSelector);
+    turkishToggle = screen.getByTitle("Türkçe");
+  };
+
+  afterEach(() => {
+    document.body.innerHTML = "";
+  });
+
+  beforeEach(() => {
+    server.use(
+      rest.get("/api/1.0/users", (req, res, ctx) => {
+        return res(ctx.status(200), ctx.json(getPage(1, 3)));
+      })
+    );
+  });
+
+  it("initially displays header and navigation links in english", async () => {
+    setup();
+    await screen.findByText("user4");
+    expect(screen.queryByText(en.users)).toBeInTheDocument();
+    expect(screen.queryByText(en.nextPage)).toBeInTheDocument();
+    expect(screen.queryByText(en.previousPage)).toBeInTheDocument();
+  });
+
+  it("displays header and navigation links in Turkish after selecting that language", async () => {
+    setup();
+    await screen.findByText("user4");
+    await userEvent.click(turkishToggle);
+    expect(screen.queryByText(tr.users)).toBeInTheDocument();
+    expect(screen.queryByText(tr.nextPage)).toBeInTheDocument();
+    expect(screen.queryByText(tr.previousPage)).toBeInTheDocument();
   });
 });
 

@@ -1,4 +1,5 @@
 <script>
+  import { _ } from "svelte-i18n";
   import { fade } from "svelte/transition";
   import { loadUsers } from "../api/apiCalls";
   import UserListItem from "./UserListItem.svelte";
@@ -23,7 +24,7 @@
 
 <div class="card">
   <div class="card-header text-center">
-    <h3>Users</h3>
+    <h3>{$_("users")}</h3>
   </div>
   <ul class="list-group list-group-flush">
     {#each page.content as user (user.id)}
@@ -37,12 +38,12 @@
       {#if page.page > 0}
         <button class="btn btn-outline-secondary btn-sm float-left" 
         in:fade
-        on:click={() => loadData(page.page - 1)} >&lt; previous</button>
+        on:click={() => loadData(page.page - 1)} >{$_("previousPage")}</button>
       {/if}
       {#if page.page < page.totalPages - 1}
         <button class="btn btn-outline-secondary btn-sm float-right" 
         in:fade
-        on:click={() => loadData(page.page + 1)}>next &gt;</button>
+        on:click={() => loadData(page.page + 1)}>{$_("nextPage")}</button>
       {/if}
     {/if}
 
