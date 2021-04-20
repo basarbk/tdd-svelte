@@ -115,5 +115,25 @@ describe("Login Page", () => {
       await waitForElementToBeRemoved(spinner);
       expect(counter).toBe(1);
     });
+    it("displays authentication fail message", async () => {
+      await setup();
+      await userEvent.click(button);
+      const errorMessage = await screen.findByText("Incorrect credentials");
+      expect(errorMessage).toBeInTheDocument();
+    });
+    it("clears authentication fail message when email field is changed", async () => {
+      await setup();
+      await userEvent.click(button);
+      const errorMessage = await screen.findByText("Incorrect credentials");
+      await userEvent.type(emailInput, "new@mail.com");
+      expect(errorMessage).not.toBeInTheDocument();
+    });
+    it("clears authentication fail message when password field is changed", async () => {
+      await setup();
+      await userEvent.click(button);
+      const errorMessage = await screen.findByText("Incorrect credentials");
+      await userEvent.type(passwordInput, "newP4ssword");
+      expect(errorMessage).not.toBeInTheDocument();
+    });
   });
 });

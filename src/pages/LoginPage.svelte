@@ -9,6 +9,8 @@
 
   let apiProgress = false;
 
+  let failMessage;
+
   const onChange = event => {
     const { id, value } = event.target;
     if(id === "email"){
@@ -16,6 +18,7 @@
     } else {
       password = value;
     }
+    failMessage = undefined;
     disabled = (email && password) ? false : true;
   }
 
@@ -24,7 +27,7 @@
     try {
       await login({email, password});
     } catch (error){
-
+      failMessage = error.response.data.message;
     }
     apiProgress = false;
   }
@@ -39,6 +42,11 @@
     <div class="card-body">
       <Input id="email" label="E-mail" on:input={onChange} />
       <Input id="password" label="Password" type="password" on:input={onChange}/>
+      {#if failMessage}
+        <div class="alert alert-danger text-center">
+          {failMessage}
+        </div>
+      {/if}
       <div class="text-center">
         <button class="btn btn-primary" disabled = {disabled || apiProgress} on:click|preventDefault={onClick}>
           {#if apiProgress}
