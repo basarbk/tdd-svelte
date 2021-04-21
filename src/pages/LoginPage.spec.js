@@ -8,6 +8,9 @@ import LoginPage from "./LoginPage.svelte";
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
+import LanguageSelector from "../components/LanguageSelector.svelte";
+import en from "../locale/en.json";
+import tr from "../locale/tr.json";
 
 const server = setupServer();
 
@@ -134,6 +137,75 @@ describe("Login Page", () => {
       const errorMessage = await screen.findByText("Incorrect credentials");
       await userEvent.type(passwordInput, "newP4ssword");
       expect(errorMessage).not.toBeInTheDocument();
+    });
+  });
+
+  describe("Internationalization", () => {
+    let turkishToggle, englishToggle;
+    const setup = () => {
+      render(LoginPage);
+      render(LanguageSelector);
+      turkishToggle = screen.getByTitle("Türkçe");
+      englishToggle = screen.getByTitle("English");
+    };
+
+    afterEach(() => {
+      document.body.innerHTML = "";
+    });
+
+    beforeEach(() => {
+      server.use(
+        rest.post("/api/1.0/auth", (req, res, ctx) => {
+          const language = req.headers.get("Accept-Language") || "en";
+          return res(
+            ctx.status(401),
+            ctx.json({
+              message:
+                language === "en"
+                  ? "Incorrect credentials"
+                  : "Kullanıcı bilgileri hatalı",
+            })
+          );
+        })
+      );
+    });
+
+    it("initially displays all texts in english", () => {
+      setup();
+      expect(
+        screen.queryByRole("heading", { name: en.login })
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: en.login })
+      ).toBeInTheDocument();
+      expect(screen.queryByLabelText(en.email)).toBeInTheDocument();
+      expect(screen.queryByLabelText(en.password)).toBeInTheDocument();
+    });
+    it("displays all texts in turkish after changing language", async () => {
+      setup();
+      await userEvent.click(turkishToggle);
+      expect(
+        screen.queryByRole("heading", { name: tr.login })
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: tr.login })
+      ).toBeInTheDocument();
+      expect(screen.queryByLabelText(tr.email)).toBeInTheDocument();
+      expect(screen.queryByLabelText(tr.password)).toBeInTheDocument();
+    });
+    it("returns authentication fail message in turkish", async () => {
+      setup();
+      await userEvent.click(turkishToggle);
+      const emailInput = screen.queryByLabelText(tr.email);
+      const passwordInput = screen.queryByLabelText(tr.password);
+      const button = screen.queryByRole("button", { name: tr.login });
+      await userEvent.type(emailInput, "user100@mail.com");
+      await userEvent.type(passwordInput, "P4ssword");
+      await userEvent.click(button);
+      const errorMessage = await screen.findByText(
+        "Kullanıcı bilgileri hatalı"
+      );
+      expect(errorMessage).toBeInTheDocument();
     });
   });
 });

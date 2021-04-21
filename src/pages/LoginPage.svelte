@@ -2,6 +2,7 @@
   import Input from '../components/Input.svelte';
   import Spinner from "../components/Spinner.svelte";
   import { login } from "../api/apiCalls";
+  import { _ } from "svelte-i18n";
 
   let email, password;
 
@@ -37,11 +38,11 @@
 <div class="col-lg-6 offset-lg-3 col-md-8 offset-md-2" data-testid="login-page">
   <form class="card mt-5" data-testid="form-sign-up">
     <div class="card-header">
-      <h1 class="text-center">Login</h1>
+      <h1 class="text-center">{$_("login")}</h1>
     </div>
     <div class="card-body">
-      <Input id="email" label="E-mail" on:input={onChange} />
-      <Input id="password" label="Password" type="password" on:input={onChange}/>
+      <Input id="email" label={$_("email")} on:input={onChange} />
+      <Input id="password" label={$_("password")} type="password" on:input={onChange}/>
       {#if failMessage}
         <div class="alert alert-danger text-center">
           {failMessage}
@@ -52,7 +53,7 @@
           {#if apiProgress}
           <Spinner />
           {/if}
-           Login</button>
+           {$_("login")}</button>
       </div>
     </div>
   </form>
