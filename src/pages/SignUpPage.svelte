@@ -3,6 +3,7 @@
   import Input from '../components/Input.svelte';
   import { signup } from "../api/apiCalls";
   import ButtonWithProgress from "../components/ButtonWithProgress.svelte";
+  import Card from "../components/Card.svelte";
 
   let disabled = true;
   let form = {
@@ -50,21 +51,21 @@
 </script>
 <div class="col-lg-6 offset-lg-3 col-md-8 offset-md-2" data-testid="signup-page">
   {#if !signUpSucess}
-    <form class="card mt-5" data-testid="form-sign-up">
-      <div class="card-header">
-        <h1 class="text-center">{$_("signUp")}</h1>
-      </div>
-      <div class="card-body">
-        <Input id="username" label={$_("username")} help={errors.username} on:input={onChange}/>
-        <Input id="email" label={$_("email")} help={errors.email} on:input={onChange} />
-        <Input id="password" label={$_("password")} help={errors.password} on:input={onChange} type="password" />
-        <Input id="passwordRepeat" label={$_("passwordRepeat")} help={passwordMismatch ? $_("passwordMismatchValidation") : ""} on:input={onChange} type="password" />
-        <div class="text-center">
-          <ButtonWithProgress {disabled} {apiProgress} onClick={submit}>
-            {$_("signUp")}
-          </ButtonWithProgress>
+    <form class="mt-5" data-testid="form-sign-up">
+      <Card>
+        <h1 slot="header">{$_("signUp")}</h1>
+        <div slot="body">
+          <Input id="username" label={$_("username")} help={errors.username} on:input={onChange}/>
+          <Input id="email" label={$_("email")} help={errors.email} on:input={onChange} />
+          <Input id="password" label={$_("password")} help={errors.password} on:input={onChange} type="password" />
+          <Input id="passwordRepeat" label={$_("passwordRepeat")} help={passwordMismatch ? $_("passwordMismatchValidation") : ""} on:input={onChange} type="password" />
+          <div class="text-center">
+            <ButtonWithProgress {disabled} {apiProgress} onClick={submit}>
+              {$_("signUp")}
+            </ButtonWithProgress>
+          </div>
         </div>
-      </div>
+      </Card>
     </form>
   {:else}
     <div class="alert alert-success mt-3">Please check your e-mail to activate your account</div>

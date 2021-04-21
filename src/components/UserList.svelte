@@ -4,6 +4,7 @@
   import { loadUsers } from "../api/apiCalls";
   import UserListItem from "./UserListItem.svelte";
   import Spinner from "./Spinner.svelte";
+  import Card from "./Card.svelte";
 
   let pendingApiCall;
 
@@ -22,16 +23,14 @@
 
 </script>
 
-<div class="card">
-  <div class="card-header text-center">
-    <h3>{$_("users")}</h3>
-  </div>
+<Card>
+  <h3 slot="header">{$_("users")}</h3>
   <ul class="list-group list-group-flush">
     {#each page.content as user (user.id)}
       <UserListItem {user} />
     {/each}
   </ul>
-  <div class="card-footer text-center">
+  <div slot="footer">
     {#if pendingApiCall}
       <Spinner size="normal"/>
     {:else}
@@ -46,7 +45,6 @@
         on:click={() => loadData(page.page + 1)}>{$_("nextPage")}</button>
       {/if}
     {/if}
-
   </div>
-  
-</div>
+
+</Card>

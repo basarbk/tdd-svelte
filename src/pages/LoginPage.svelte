@@ -4,6 +4,7 @@
   import { _ } from "svelte-i18n";
   import { navigate } from "svelte-routing";
   import ButtonWithProgress from "../components/ButtonWithProgress.svelte";
+  import Card from "../components/Card.svelte";
 
   let email, password;
 
@@ -38,23 +39,23 @@
 </script>
 
 <div class="col-lg-6 offset-lg-3 col-md-8 offset-md-2" data-testid="login-page">
-  <form class="card mt-5" data-testid="form-sign-up">
-    <div class="card-header">
-      <h1 class="text-center">{$_("login")}</h1>
-    </div>
-    <div class="card-body">
-      <Input id="email" label={$_("email")} on:input={onChange} />
-      <Input id="password" label={$_("password")} type="password" on:input={onChange}/>
-      {#if failMessage}
-        <div class="alert alert-danger text-center">
-          {failMessage}
+  <form class="mt-5" data-testid="form-sign-up">
+    <Card>
+      <h1 slot="header">{$_("login")}</h1>
+      <div slot="body">
+        <Input id="email" label={$_("email")} on:input={onChange} />
+        <Input id="password" label={$_("password")} type="password" on:input={onChange}/>
+        {#if failMessage}
+          <div class="alert alert-danger text-center">
+            {failMessage}
+          </div>
+        {/if}
+        <div class="text-center">
+          <ButtonWithProgress {disabled} {apiProgress} {onClick}>
+            {$_("login")}
+          </ButtonWithProgress>
         </div>
-      {/if}
-      <div class="text-center">
-        <ButtonWithProgress {disabled} {apiProgress} {onClick}>
-          {$_("login")}
-        </ButtonWithProgress>
       </div>
-    </div>
+    </Card>
   </form>
 </div>
