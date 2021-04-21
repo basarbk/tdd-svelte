@@ -1,9 +1,9 @@
 <script>
   import Input from '../components/Input.svelte';
-  import Spinner from "../components/Spinner.svelte";
   import { login } from "../api/apiCalls";
   import { _ } from "svelte-i18n";
   import { navigate } from "svelte-routing";
+  import ButtonWithProgress from "../components/ButtonWithProgress.svelte";
 
   let email, password;
 
@@ -51,11 +51,9 @@
         </div>
       {/if}
       <div class="text-center">
-        <button class="btn btn-primary" disabled = {disabled || apiProgress} on:click|preventDefault={onClick}>
-          {#if apiProgress}
-          <Spinner />
-          {/if}
-           {$_("login")}</button>
+        <ButtonWithProgress {disabled} {apiProgress} {onClick}>
+          {$_("login")}
+        </ButtonWithProgress>
       </div>
     </div>
   </form>

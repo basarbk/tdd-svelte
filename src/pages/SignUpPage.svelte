@@ -1,8 +1,8 @@
 <script>
   import { _ } from "svelte-i18n";
   import Input from '../components/Input.svelte';
-  import Spinner from "../components/Spinner.svelte";
   import { signup } from "../api/apiCalls";
+  import ButtonWithProgress from "../components/ButtonWithProgress.svelte";
 
   let disabled = true;
   let form = {
@@ -60,12 +60,9 @@
         <Input id="password" label={$_("password")} help={errors.password} on:input={onChange} type="password" />
         <Input id="passwordRepeat" label={$_("passwordRepeat")} help={passwordMismatch ? $_("passwordMismatchValidation") : ""} on:input={onChange} type="password" />
         <div class="text-center">
-          <button class="btn btn-primary" disabled={disabled || apiProgress} on:click|preventDefault={submit}>
-            {#if apiProgress}
-              <Spinner />
-            {/if}
-            
-            {$_("signUp")}</button>
+          <ButtonWithProgress {disabled} {apiProgress} onClick={submit}>
+            {$_("signUp")}
+          </ButtonWithProgress>
         </div>
       </div>
     </form>
