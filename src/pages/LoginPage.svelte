@@ -3,6 +3,7 @@
   import Spinner from "../components/Spinner.svelte";
   import { login } from "../api/apiCalls";
   import { _ } from "svelte-i18n";
+  import { navigate } from "svelte-routing";
 
   let email, password;
 
@@ -27,6 +28,7 @@
     apiProgress = true;
     try {
       await login({email, password});
+      navigate("/");
     } catch (error){
       failMessage = error.response.data.message;
     }
