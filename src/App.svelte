@@ -7,6 +7,15 @@
 	import AccountActivationPage from "./pages/AccountActivationPage.svelte";
 	import { _ } from "svelte-i18n";
 	import { Router, Route, Link} from "svelte-routing";
+	import { auth } from "./store/stores";
+
+	let isLoggedIn = false;
+	let loggedInUserId;
+
+	auth.subscribe((authState) => {
+		isLoggedIn = authState.isLoggedIn;
+		loggedInUserId = authState.id;
+	})
 
 </script>
 
@@ -19,8 +28,12 @@
 			</Link>
 	
 			<ul class="navbar-nav ml-auto">
-				<Link class="nav-link" to="/signup">{$_("signUp")}</Link>
-				<Link class="nav-link" to="/login">Login</Link>
+				{#if !isLoggedIn}
+					<Link class="nav-link" to="/signup">{$_("signUp")}</Link>
+					<Link class="nav-link" to="/login">Login</Link>
+				{:else}
+					<Link class="nav-link" to={`/user/${loggedInUserId}`}>My Profile</Link>
+				{/if}
 			</ul>
 		</nav>
 	</div>

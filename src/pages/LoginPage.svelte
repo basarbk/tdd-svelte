@@ -5,6 +5,7 @@
   import { navigate } from "svelte-routing";
   import ButtonWithProgress from "../components/ButtonWithProgress.svelte";
   import Card from "../components/Card.svelte";
+  import { auth } from "../store/stores";
 
   let email, password;
 
@@ -28,7 +29,8 @@
   const onClick = async () => {
     apiProgress = true;
     try {
-      await login({email, password});
+      const response = await login({email, password});
+      auth.set({isLoggedIn: true, id: response.data.id});
       navigate("/");
     } catch (error){
       failMessage = error.response.data.message;
