@@ -3,6 +3,8 @@ import userEvent from "@testing-library/user-event";
 import App from "./App.svelte";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
+import { resetAuthState } from "./store/stores";
+import storage from "./store/storage";
 
 const server = setupServer(
   rest.post("/api/1.0/users/token/:token", (req, res, ctx) => {
@@ -153,6 +155,11 @@ describe("Routing", () => {
       await userEvent.type(passwordInput, "P4ssword");
     };
 
+    afterEach(() => {
+      storage.clear();
+      resetAuthState();
+    });
+
     it("redirects to homepage after successful login", async () => {
       await setupFillLogin();
       await userEvent.click(button);
@@ -184,6 +191,20 @@ describe("Routing", () => {
       await userEvent.click(myProfileLink);
       expect(screen.queryByTestId("user-page")).toBeInTheDocument();
       expect(window.location.pathname.endsWith("/user/5")).toBeTruthy();
+    });
+    it("stores logged in state in local storage", async () => {
+      await setupFillLogin();
+      await userEvent.click(button);
+      await screen.findByTestId("home-page");
+      const state = storage.getItem("auth");
+      expect(state.isLoggedIn).toBeTruthy();
+    });
+    it("displays layout of logged in state when local storage has logged in user", async () => {
+      storage.setItem("auth", { isLoggedIn: true });
+      resetAuthState();
+      await setup("/");
+      const myProfileLink = screen.queryByRole("link", { name: "My Profile" });
+      expect(myProfileLink).toBeInTheDocument();
     });
   });
 });
