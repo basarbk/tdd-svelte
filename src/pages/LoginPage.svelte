@@ -31,8 +31,9 @@
     try {
       const response = await login({email, password});
       $auth = {
-        isLoggedIn: true,
-        id: response.data.id
+        ...response.data,
+        header: `Bearer ${response.data.token}`,
+        isLoggedIn: true
       }
       navigate("/");
     } catch (error){

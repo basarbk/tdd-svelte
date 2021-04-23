@@ -11,6 +11,7 @@ import { rest } from "msw";
 import LanguageSelector from "../components/LanguageSelector.svelte";
 import en from "../locale/en.json";
 import tr from "../locale/tr.json";
+import storage from "../store/storage";
 
 const server = setupServer();
 
@@ -19,6 +20,18 @@ beforeAll(() => server.listen());
 beforeEach(() => server.resetHandlers());
 
 afterAll(() => server.close());
+
+const loginSuccess = rest.post("/api/1.0/auth", (req, res, ctx) => {
+  return res(
+    ctx.status(200),
+    ctx.json({
+      id: 5,
+      username: "user5",
+      image: null,
+      token: "abcdefgh",
+    })
+  );
+});
 
 describe("Login Page", () => {
   describe("Layout", () => {
@@ -137,6 +150,27 @@ describe("Login Page", () => {
       const errorMessage = await screen.findByText("Incorrect credentials");
       await userEvent.type(passwordInput, "newP4ssword");
       expect(errorMessage).not.toBeInTheDocument();
+    });
+    it("stores id, username and image in storage", async () => {
+      server.use(loginSuccess);
+      await setup();
+      await userEvent.click(button);
+      const spinner = screen.queryByRole("status");
+      await waitForElementToBeRemoved(spinner);
+      const storedState = storage.getItem("auth");
+      const keyList = Object.keys(storedState);
+      expect(keyList.includes("id")).toBeTruthy();
+      expect(keyList.includes("username")).toBeTruthy();
+      expect(keyList.includes("image")).toBeTruthy();
+    });
+    it("stores authorization header value in storage", async () => {
+      server.use(loginSuccess);
+      await setup();
+      await userEvent.click(button);
+      const spinner = screen.queryByRole("status");
+      await waitForElementToBeRemoved(spinner);
+      const storedState = storage.getItem("auth");
+      expect(storedState.header).toBe("Bearer abcdefgh");
     });
   });
 
