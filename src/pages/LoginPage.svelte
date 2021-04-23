@@ -30,7 +30,10 @@
     apiProgress = true;
     try {
       const response = await login({email, password});
-      auth.set({isLoggedIn: true, id: response.data.id});
+      $auth = {
+        isLoggedIn: true,
+        id: response.data.id
+      }
       navigate("/");
     } catch (error){
       failMessage = error.response.data.message;
