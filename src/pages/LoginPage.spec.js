@@ -29,7 +29,8 @@ const loginSuccess = rest.post("/api/1.0/auth", (req, res, ctx) => {
       username: "user5",
       image: null,
       token: "abcdefgh",
-    })
+    }),
+    ctx.delay(50)
   );
 });
 
@@ -88,7 +89,8 @@ describe("Login Page", () => {
           counter += 1;
           return res(
             ctx.status(401),
-            ctx.json({ message: "Incorrect credentials" })
+            ctx.json({ message: "Incorrect credentials" }),
+            ctx.delay(50)
           );
         })
       );

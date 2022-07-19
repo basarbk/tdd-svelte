@@ -72,7 +72,7 @@ describe("Sign Up Page", () => {
         rest.post("/api/1.0/users", (req, res, ctx) => {
           requestBody = req.body;
           counter += 1;
-          return res(ctx.status(200));
+          return res(ctx.status(200), ctx.delay(50));
         })
       );
     });
@@ -155,7 +155,7 @@ describe("Sign Up Page", () => {
     it("does not display account activation information after failing sign up request", async () => {
       server.use(
         rest.post("/api/1.0/users", (req, res, ctx) => {
-          return res(ctx.status(400));
+          return res(ctx.status(400), ctx.delay(50));
         })
       );
       await setup();
@@ -190,12 +190,12 @@ describe("Sign Up Page", () => {
       });
     };
 
-    it.each`
-      field         | message
-      ${"username"} | ${"Username cannot be null"}
-      ${"email"}    | ${"E-mail cannot be null"}
-      ${"password"} | ${"Password cannot be null"}
-    `("displays $message for $field field", async ({ field, message }) => {
+    it.each([
+      ["username", "Username cannot be null"],
+      ["email", "E-mail cannot be null"],
+      ["password", "Password cannot be null"],
+
+    ])("when %s field is invalid, displays %s", async (field, message) => {
       server.use(generateValidationError(field, message));
       await setup();
 
@@ -240,14 +240,13 @@ describe("Sign Up Page", () => {
       const validationError = screen.queryByText("Password mismatch");
       expect(validationError).not.toBeInTheDocument();
     });
-    it.each`
-      field         | message                      | label
-      ${"username"} | ${"Username cannot be null"} | ${"Username"}
-      ${"email"}    | ${"E-mail cannot be null"}   | ${"E-mail"}
-      ${"password"} | ${"Password cannot be null"} | ${"Password"}
-    `(
-      "clears validation error after $field field is updated",
-      async ({ field, message, label }) => {
+    it.each([
+      ["username", "Username cannot be null", "Username"],
+      ["email", "E-mail cannot be null", "E-mail"],
+      ["password", "Password cannot be null", "Password"],
+    ])(
+      "clears validation error after %s field is updated",
+      async (field, message, label) => {
         server.use(generateValidationError(field, message));
         await setup();
 
